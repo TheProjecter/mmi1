@@ -5,10 +5,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
 public class P26 implements MouseMotionListener { 
-	private List64 experiment;
+	private static List64 experiment;
 	private AnimatedCanvas experimentGUI;
 	private Logger experimentLogger;
 	private int hitCounter;
+	private static Tunnel currentTunnel;
 
 	public P26() throws AWTException {
 		this.experiment = new List64();
@@ -62,13 +63,13 @@ public class P26 implements MouseMotionListener {
 //		}
 		try {
 			P26 myProg= new P26();
-//			for(int i =0;i<= 63;i++){
-//				myProg.experimentGUI.setSize(800,600);
-//				myProg.experimentGUI.setMousePosition(2);
-//				myProg.experimentGUI.setTitle("Buffered Animated Canvas");
-//				myProg.experimentGUI.setVisible(true);
-//				myProg.experimentGUI.go();
-//			}
+			
+			for(int i =0;i<= 63;i++){
+				currentTunnel=experiment.getNext();
+				while (true) {
+					if (true){ break;}
+				}
+			}
 			myProg.experimentGUI.setSize(800,600);
 			myProg.experimentGUI.setMousePosition(2);
 			myProg.experimentGUI.setTitle("Buffered Animated Canvas");
