@@ -1,4 +1,4 @@
-package mmi;
+//package mmi;
 
 import java.io.BufferedWriter;
 import java.io.File;

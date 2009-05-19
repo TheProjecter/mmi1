@@ -1,4 +1,4 @@
-package mmi;
+//package mmi;
 
 import java.awt.*;
 import javax.swing.*;
