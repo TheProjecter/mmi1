@@ -62,13 +62,13 @@ public class P26 implements MouseMotionListener {
 //		}
 		try {
 			P26 myProg= new P26();
-			for(int i =0;i<= 63;i++){
-				myProg.experimentGUI.setSize(800,600);
-				myProg.experimentGUI.setMousePosition(2);
-				myProg.experimentGUI.setTitle("Buffered Animated Canvas");
-				myProg.experimentGUI.setVisible(true);
-				myProg.experimentGUI.go();
-			}
+//			for(int i =0;i<= 63;i++){
+//				myProg.experimentGUI.setSize(800,600);
+//				myProg.experimentGUI.setMousePosition(2);
+//				myProg.experimentGUI.setTitle("Buffered Animated Canvas");
+//				myProg.experimentGUI.setVisible(true);
+//				myProg.experimentGUI.go();
+//			}
 			myProg.experimentGUI.setSize(800,600);
 			myProg.experimentGUI.setMousePosition(2);
 			myProg.experimentGUI.setTitle("Buffered Animated Canvas");
