@@ -5,10 +5,14 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.util.Date;
-import java.util.Observable;
-import java.util.Observer;
+//import java.util.Observable;
+//import java.util.Observer;
 
-public class P26 implements MouseMotionListener,Observer{ 
+public class P26 /*implements Observer*/ { 
+	
+	private static final int CANVAS_WIDTH 	= 1174;
+	private static final int CANVAS_HEIGHT	= 1174;
+	
 	private static List64 experiment;
 	private static AnimatedCanvas experimentGUI;
 	private static Logger experimentLogger;
@@ -20,78 +24,19 @@ public class P26 implements MouseMotionListener,Observer{
 	private static String gender;
 
 	public P26() throws AWTException {
-		this.experiment = new List64();
-		this.experimentGUI = new AnimatedCanvas();
+		this.experiment 			= new List64();
 		this.experimentLogger = new Logger();
-		experimentGUI.getJFrame().addMouseMotionListener(this);
-	}
-
-	/**
-	 * Mouse Moved Listener Kollision Schaut ob der Mauszeiger ausserhalb des
-	 * Tunnels ist und wenn ja setzt ihn wieder an den Tunnelrand
-	 * 
-	 * @throws AWTException
-	 */
-	public void mouseMoved(MouseEvent e) {
-		experimentGUI.setMouseX(e.getX());
-		experimentGUI.setMouseY(e.getY());
-
-		int xPos = (int) experimentGUI.getJFrame().getX() + e.getX();
 		
-//			switch(experimentGUI.getTunnelDirection()){
-//			case 0: {
-//				if(xPos>=experimentGUI.getBox1().getWidth()){
-//					tunnelReady=true;
-//					break;	
-//				}
-//			}
-//			case 1: {
-//				if(xPos>=experimentGUI.getBox1().getWidth()){
-//					tunnelReady=true;
-//					break;	
-//				}
-//			}
-//			case 2: {
-//				if(xPos>=experimentGUI.getBox1().getWidth()){
-//					tunnelReady=true;
-//					break;	
-//				}
-//			}
-//			case 3: {
-//				if(xPos>=experimentGUI.getBox1().getWidth()){
-//					tunnelReady=true;
-//					break;	
-//				}
-//			}
-//			}
-			if (experimentGUI.getMouseY() > (int) experimentGUI.getBox2().getY()) // Falls unter Tunnel
-			{
-				experimentGUI.getRobot().mouseMove(xPos, (int) (experimentGUI.getJFrame().getY()+experimentGUI.getBox2().getY()));
-				experimentGUI.setHitColorBox2(experimentGUI.getHitColor()); // getroffene Fläche markieren
-				experimentGUI.hitCounter++;
-			} else if (experimentGUI.getMouseY() < (int) experimentGUI.getBox1().getHeight()) // Falls über Tunnel
-			{
-				experimentGUI.getRobot().mouseMove(xPos, (int) (experimentGUI.getJFrame().getY()+experimentGUI.getBox1().getHeight()));
-				experimentGUI.setHitColorBox1(experimentGUI.getHitColor()); // getroffene Fläche markieren
-				experimentGUI.hitCounter++;
-			}
-		}
-			
-		
-	
-
-	/**
-	  *
-	  */
-	public void mouseDragged(MouseEvent e) {
+		this.experimentGUI 		= new AnimatedCanvas(CANVAS_WIDTH, CANVAS_HEIGHT, this);
+		//experimentGUI.getJFrame().addMouseMotionListener(this);
 	}
 
 	/**
 	 * Programm starten
 	 */
 	public static void main(String args[]) {
-		user=args[1];
-		gender=args[2];
+		user=args[0];
+		gender=args[1];
 //		try {
 //			AnimatedCanvas f = new AnimatedCanvas();
 //			f.setSize(800, 600);
@@ -130,7 +75,20 @@ public class P26 implements MouseMotionListener,Observer{
 		}
 
 	}
+	
+	public void tunnelFinished()
+	{
+		if (!experiment.getList().isEmpty()){
+			currentTunnel=experiment.getNext();//loads every next tunnel
+			experimentGUI.setNewTunnel(currentTunnel);
+			experimentLogger.addTestcase(user, new Testcase(user,currentTunnel.getWidth()+"/"+currentTunnel.getLength()+"/"+currentTunnel.getDirection(),new Dimension(currentTunnel.getWidth(),currentTunnel.getLength()),MOUSESPEED,new Date(System.currentTimeMillis()),experimentGUI.hitCounter,user,gender));// logging the results
+			
+		}else{
+			experimentLogger.flush("c:\\");
+		}
+}
 
+/*
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
@@ -141,8 +99,7 @@ public class P26 implements MouseMotionListener,Observer{
 			
 		}else{
 			experimentLogger.flush("c:\\");
-		}
-			
-		
+		}		
 	}
+*/
 }
