@@ -134,9 +134,15 @@ public class P26 implements MouseMotionListener,Observer{
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		// TODO Auto-generated method stub
-		currentTunnel=experiment.getNext();//loads every next tunnel
-		experimentGUI.setNewTunnel(currentTunnel);
-		experimentLogger.addTestcase(user, new Testcase(user,currentTunnel.getWidth()+"/"+currentTunnel.getLength()+"/"+currentTunnel.getDirection(),new Dimension(currentTunnel.getWidth(),currentTunnel.getLength()),MOUSESPEED,new Date(System.currentTimeMillis()),experimentGUI.hitCounter,user,gender));// logging the results
+		if (!experiment.getList().isEmpty()){
+			currentTunnel=experiment.getNext();//loads every next tunnel
+			experimentGUI.setNewTunnel(currentTunnel);
+			experimentLogger.addTestcase(user, new Testcase(user,currentTunnel.getWidth()+"/"+currentTunnel.getLength()+"/"+currentTunnel.getDirection(),new Dimension(currentTunnel.getWidth(),currentTunnel.getLength()),MOUSESPEED,new Date(System.currentTimeMillis()),experimentGUI.hitCounter,user,gender));// logging the results
+			
+		}else{
+			experimentLogger.flush("c:\\");
+		}
+			
 		
 	}
 }
