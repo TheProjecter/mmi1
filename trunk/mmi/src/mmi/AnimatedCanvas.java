@@ -1,53 +1,53 @@
 //package mmi;
 
 import java.awt.*;
-import java.awt.Robot;
+//import java.awt.Robot;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 
-public class AnimatedCanvas extends JFrame implements MouseMotionListener { // implements MouseMotionListener
+public class AnimatedCanvas extends JFrame implements MouseMotionListener, MouseListener
+{
+	// Konstanten
+	private static final int MOUSESTARTOFFSET		= 50;
+	private static final Font HINTFONT					= new Font("Arial", Font.BOLD, 50 );
+	private static final Font DEFAULTFONT				= new Font("Arial", Font.PLAIN, 8 );
+	private static final String[] directionTxt	= { "horizontal, left-right", "vertical, top-bottom", "horizontal, right-left", "vertical, bottom-top" };
+	private static final Color boxColor 				= Color.GREEN;													// Farbe der Randflächen
+	private static int DELAY = 1; 																											// repaint Delay
+	// --
 	
-	private P26 p26;														// zirkuläre Abängigkeit
-
-	private int WIDTH; 													// Fensterbreite
-	private int HEIGHT; 												// Fensterhšhe
-	private int TWIDTH; 												// Tunnel width
-	
-	private Tunnel currentTunnel;								// Der aktuelle Tunnel
-	private Boolean horizontal 					= false;
-	private String[] directionTxt 			= { "horizontal, left-right", "vertical, top-bottom", "horizontal, right-left", "vertical, bottom-top" };
-	private String hitTxt								= "kein Treffer";
-	private final int MOUSESTARTOFFSET	= 50;		// Pixeloffset, wie weit Maus von Tunnel platziert wird
-	
-	/**
-	 * TDIRECTION: Tunnel Direction 0: horizontal, left-right; 1: vertical,
-	 * top-bottom; 2: horizontal, right-left 3: vertical, bottom-top
-	 */
-	private int TDIRECTION; 																		// Tunnel direction
-	int hitCounter = 0; 																				// ZŠhler fŸr Treffer
-
+	private P26 p26;																																		// zirkuläre Abängigkeit anstatt Observable
+	private int WIDTH;																			 														// Fensterbreite
+	private int HEIGHT; 																																// Fensterhšhe
+	private Tunnel currentTunnel;																												// Der aktuelle Tunnel
+	// Steuerzeichen
+	private Boolean horizontal 					= false;																				// Tunnel horizontal
+	private Boolean mouseEnabled				= true;																					// Mausbewegung erlaubt
+	private Boolean finished						= false;																				// Test beendet
+	// Statistik	
+	public int hitCounter = 0; 																													// Zähler für Treffer
+	public long timeAtStart = 0;																												// Startzeitpunkt für den Tunneldurchlauf (mouseRelease)
+	public long timeAtEnd = 0;																													// Endzeitpunkt (Goal erreicht)
 	// Zeichnen
-	private static int DELAY = 1; 															// repaint Delay
-	private Image buffer; 																			// screen buffer, flackerfreie darstellung
-	
+	private Image buffer; 																															// screen buffer, flackerfreie darstellung
 	// Darstellung
-	private Color hitColorBox1, hitColorBox2; 									// aktuelle Farbe der getroffenen Fläche
-	private Color boxColor = Color.GREEN; 											// Farbe für Hit-Flächen
-	private Color hitColor = new Color(1.0f, 0.0f, 0.0f, 1.0f); // Trefferfarbe
-	
-	private Rectangle box1, box2, tunnel, goal;									// Alle benötigten Flächen
-
+	private Color hitColorBox1, hitColorBox2; 																					// aktuelle Farbe der getroffenen Fläche
+	private Color hitColor = new Color(1.0f, 0.0f, 0.0f, 1.0f); 												// Trefferfarbe
+	private Rectangle box1, box2, tunnel, goal;																					// Alle benötigten Flächen
 	// Maus
 	private Robot robot;
 	private int startMouseX, startMouseY;
-	private int mouseX, mouseY; 																// Speichert Mausposition (nur für Ausgabe)
+	private int mouseX, mouseY; 																												// Speichert Mausposition (nur für Ausgabe)
+
 
 	/**
-	 * Timed Repaint starten spŠter besser Thread um Delay zu verringern
+	 * go
+	 *	Timed Repaint starten
 	 */
 	public void go() {
 
@@ -94,20 +94,26 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener { // i
 		this.setSize( canvasWidth, canvasHeight );
 		this.setVisible(true);
 		addMouseMotionListener(this);
+		addMouseListener(this);
 		
 		go();
 	}
 	
+	
 	/**
 	 * Mouse Moved Listener Kollision Schaut ob der Mauszeiger ausserhalb des
 	 * Tunnels ist und wenn ja setzt ihn wieder an den Tunnelrand
-	 * 
-	 * @throws AWTException
 	 */
 	public void mouseMoved(MouseEvent e)
 	{
 		mouseX = e.getX();
 		mouseY = e.getY();
+		
+		if( !mouseEnabled )
+		{
+			robot.mouseMove( startMouseX, startMouseY );
+			return;
+		}
 		
 		if( box1.contains(mouseX, mouseY) )
 		{
@@ -132,13 +138,20 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener { // i
 		}
 		else if( goal.contains(mouseX,mouseY) )
 		{
+			timeAtEnd = System.currentTimeMillis();
 			p26.tunnelFinished();
 		}
 	}
 
-	public void mouseDragged(MouseEvent e) {}
+	public void mouseDragged(MouseEvent e) 	{}
+	public void mouseClicked(MouseEvent e) 	{ mouseEnabled = true; timeAtStart = System.currentTimeMillis(); }
+	public void mouseEntered(MouseEvent e) 	{}
+	public void mouseExited(MouseEvent e) 	{}
+	public void mousePressed(MouseEvent e) 	{}
+	public void mouseReleased(MouseEvent e) {}
 	
-		/**
+	
+	/**
 	 * paint Zeichenroutine
 	 */
 	public void paint(Graphics g) {
@@ -155,7 +168,7 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener { // i
 		bufferG.setColor(Color.GRAY);
 		bufferG.fillRect((int) goal.getX(), (int) goal.getY(), (int) goal.getWidth(), (int) goal.getHeight());
 		
-		// TrefferflŠchen ausfaden (Alpha)
+		// Trefferflächen ausfaden (Alpha)
 		if (hitColorBox1.getAlpha() > 0) {
 			hitColorBox1 = new Color(255, 0, 0, hitColorBox1.getAlpha() - 1);
 		}
@@ -168,20 +181,39 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener { // i
 		bufferG.fillRect((int) box1.getX(), (int) box1.getY(), (int) box1.getWidth(), (int) box1.getHeight());
 		bufferG.setColor(hitColorBox2);
 		bufferG.fillRect((int) box2.getX(), (int) box2.getY(), (int) box2.getWidth(), (int) box2.getHeight());
-
-		// Textdarstellung
-		bufferG.setColor(Color.BLACK);
-		bufferG.drawString("Maus X: " + mouseX + " | Maus Y: " + mouseY + " | Hits: " + hitCounter, 100, 100);
-		bufferG.drawString(	"Movement Direction: Please move the mouse poiner through the tunnel : "+ directionTxt[currentTunnel.getDirection()], 100, 120);
-		bufferG.drawString(	hitTxt, 100, 140);
 		
 		// Tunnel zeichnen (zuletzt, damit visuell korrekt)
 		bufferG.setColor(Color.GRAY);
 		bufferG.fillRect((int) tunnel.getX(), (int) tunnel.getY(), (int) tunnel.getWidth(), (int) tunnel.getHeight());
 
+		// Textdarstellung
+		bufferG.setColor(Color.BLACK);
+		bufferG.drawString("Maus X: " + mouseX + " | Maus Y: " + mouseY + " | Hits: " + hitCounter, 20, (int)this.getHeight()-70 );
+		bufferG.drawString(	"Movement Direction:" + directionTxt[currentTunnel.getDirection()], 20, (int)this.getHeight()-50);
+		if( mouseEnabled ) bufferG.drawString( "Time: " + (System.currentTimeMillis() - timeAtStart), 20, (int)this.getHeight()-30);
+		else bufferG.drawString( "Time: 0", 20, (int)this.getHeight()-30);
+		
+		
+		if( !mouseEnabled ) {
+			bufferG.setColor( Color.BLACK );
+			bufferG.setFont( HINTFONT );
+			bufferG.drawString(	"Bitte drücken und loslassen", 50, 100 );
+			bufferG.drawString( "(ohne zu ziehen) um zu starten", 50, 150 );
+			bufferG.setFont( DEFAULTFONT );
+		}
+		else if ( finished )
+		{
+			bufferG.setColor( Color.RED );
+			bufferG.setFont( HINTFONT );
+			bufferG.drawString(	"Test beendet", 50, 100 );
+			bufferG.drawString( "Danke für die Teilnahme", 50, 150 );
+			bufferG.setFont( DEFAULTFONT );
+		}
+
 		// Buffer auf Canvas zeichnen
 		g.drawImage(buffer, 0, 0, this);
 	}
+	
 	
 	/**
 	 * setNewTunnel
@@ -195,6 +227,8 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener { // i
 		
 		// Variablen zurücksetzen
 		hitCounter = 0;
+		timeAtStart = 0;
+		timeAtEnd = 0;
 		hitColorBox1 = new Color(1.0f, 0.0f, 0.0f, 0.0f);
 		hitColorBox2 = new Color(1.0f, 0.0f, 0.0f, 0.0f);
 		
@@ -255,7 +289,8 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener { // i
 			box2.setLocation( tunnelBorderX, tunnelOffsetY );
 			
 			// Maus Startposition berechnen
-			startMouseX = tunnelOffsetX + currentTunnel.getWidth()/2;			
+			startMouseX = tunnelOffsetX + currentTunnel.getWidth()/2;
+				
 			if( currentTunnel.getDirection() == 1 )		// top-bottom
 			{
 				startMouseY = tunnelOffsetY - MOUSESTARTOFFSET;
@@ -269,13 +304,26 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener { // i
 				
 				// Zielfläche oben
 				goal.setSize( this.getWidth(), tunnelOffsetY  );
-				goal.setLocation( 0, tunnelOffsetY + currentTunnel.getLength() );
+				goal.setLocation( 0, 0 );
 			}
 		} // END TUNNEL
 		
 		// Maus positionieren
 		robot.mouseMove( startMouseX, startMouseY );
 		
+		// Maus sperren
+		mouseEnabled = false;
 	}
 	
+	
+	/**
+	 * finish
+	 * 	Räumt den Canvas auf und zeigt "danke" Text an
+	 */
+	public void finish()
+	{
+		setNewTunnel( new Tunnel( WIDTH, HEIGHT, 0 ) );		
+		mouseEnabled = true;
+		finished = true;
+	}
 }
