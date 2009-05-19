@@ -16,16 +16,16 @@ import java.util.HashMap;
  */
 public final class Logger {
 	
-	/**
-	 * The singleton instance.
-	 */
-	public static final Logger INSTANCE = new Logger();
+//	/**
+//	 * The singleton instance.
+//	 */
+//	public static final Logger INSTANCE = new Logger();
 
 	private HashMap<String, ArrayList<Testcase>> data;
 	private String valueSeparator = ";";
 	private String lineFeed = System.getProperty("line.separator");
 
-	private Logger() {
+	public Logger() {
 		data = new HashMap<String, ArrayList<Testcase>>();
 	}
 
