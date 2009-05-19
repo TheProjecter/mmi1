@@ -10,6 +10,7 @@ public class P26 implements MouseMotionListener {
 	private Logger experimentLogger;
 	private int hitCounter;
 	private static Tunnel currentTunnel;
+	private static Boolean tunnelReady=false;
 
 	public P26() throws AWTException {
 		this.experiment = new List64();
@@ -29,18 +30,29 @@ public class P26 implements MouseMotionListener {
 		experimentGUI.setMouseY(e.getY());
 
 		int xPos = (int) experimentGUI.getJFrame().getX() + e.getX();
-
-		if (experimentGUI.getMouseY() > (int) experimentGUI.getBox2().getY()) // Falls unter Tunnel
-		{
-			experimentGUI.getRobot().mouseMove(xPos, (int) (experimentGUI.getJFrame().getY()+experimentGUI.getBox2().getY()));
-			experimentGUI.setHitColorBox2(experimentGUI.getHitColor()); // getroffene Fläche markieren
-			experimentGUI.hitCounter++;
-		} else if (experimentGUI.getMouseY() < (int) experimentGUI.getBox1().getHeight()) // Falls über Tunnel
-		{
-			experimentGUI.getRobot().mouseMove(xPos, (int) (experimentGUI.getJFrame().getY()+experimentGUI.getBox1().getHeight()));
-			experimentGUI.setHitColorBox1(experimentGUI.getHitColor()); // getroffene Fläche markieren
-			experimentGUI.hitCounter++;
+		while (true){
+			switch(experimentGUI.getTunnelDirection()){
+				case 0: {
+					if(xPos>=experimentGUI.getBox1().getWidth()){
+						tunnelReady=true;
+						break;	
+					}
+				}
+			}
+			if (experimentGUI.getMouseY() > (int) experimentGUI.getBox2().getY()) // Falls unter Tunnel
+			{
+				experimentGUI.getRobot().mouseMove(xPos, (int) (experimentGUI.getJFrame().getY()+experimentGUI.getBox2().getY()));
+				experimentGUI.setHitColorBox2(experimentGUI.getHitColor()); // getroffene Fläche markieren
+				experimentGUI.hitCounter++;
+			} else if (experimentGUI.getMouseY() < (int) experimentGUI.getBox1().getHeight()) // Falls über Tunnel
+			{
+				experimentGUI.getRobot().mouseMove(xPos, (int) (experimentGUI.getJFrame().getY()+experimentGUI.getBox1().getHeight()));
+				experimentGUI.setHitColorBox1(experimentGUI.getHitColor()); // getroffene Fläche markieren
+				experimentGUI.hitCounter++;
+			}
 		}
+			
+		
 	}
 
 	/**
@@ -67,11 +79,12 @@ public class P26 implements MouseMotionListener {
 			for(int i =0;i<= 63;i++){
 				currentTunnel=experiment.getNext();
 				while (true) {
-					if (true){ break;}
+					//wait
+					if (tunnelReady){ break;}
 				}
 			}
 			myProg.experimentGUI.setSize(800,600);
-			myProg.experimentGUI.setMousePosition(2);
+			myProg.experimentGUI.setMousePosition(0);
 			myProg.experimentGUI.setTitle("Buffered Animated Canvas");
 			myProg.experimentGUI.setVisible(true);
 			myProg.experimentGUI.go();
