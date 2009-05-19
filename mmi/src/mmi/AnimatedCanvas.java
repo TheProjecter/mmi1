@@ -24,6 +24,7 @@ public class AnimatedCanvas extends JFrame { // implements MouseMotionListener
 	private final String direction1 = "vertical, top-bottom";
 	private final String direction2 = "horizontal, right-left";
 	private final String direction3 = "vertical, bottom-top";
+	private String directionMsg;
 	/**
 	 * TDIRECTION: Tunnel Direction 0: horizontal, left-right; 1: vertical,
 	 * top-bottom; 2: horizontal, right-left 3: vertical, bottom-top
@@ -107,7 +108,7 @@ public class AnimatedCanvas extends JFrame { // implements MouseMotionListener
 		// Textdarstellung
 		bufferG.setColor(Color.BLACK);
 		bufferG.drawString("Maus X: " + mouseX + " | Maus Y: " + mouseY + " | Hits: " + hitCounter, 100, 100);
-		bufferG.drawString(	"Movement Direction: Please move the mouse poiner through the tunnel : "+ TDIRECTION, 100, 120);
+		bufferG.drawString(	"Movement Direction: Please move the mouse poiner through the tunnel : "+ directionMsg, 100, 120);
 
 		// Buffer auf Canvas zeichnen
 		g.drawImage(buffer, 0, 0, this);
@@ -292,10 +293,22 @@ public class AnimatedCanvas extends JFrame { // implements MouseMotionListener
 	public void setMousePosition(int mDirection) {
 		setTunnelDirection(mDirection);
 		switch (mDirection) {
-		case 0: robot.mouseMove(this.getX() + (int) box1.getX(), (int) (box1.getX()+ box1.getHeight() + (tunnel.height / 2)));
-		case 1: robot.mouseMove(this.getX()+ (int) (box1.getX() + (box1.getWidth() / 2)), (int) box1.getY());
-		case 2: robot.mouseMove((this.getX() +(int) (box1.getX() + box1.getWidth())),(int) (box1.getX() + box1.getHeight() + (tunnel.height / 2)));
-		case 3: robot.mouseMove(this.getX(), (int) (box1.getY()+ tunnel.getY() + box2.getY()));
+		case 0: {
+			robot.mouseMove(this.getX() + (int) box1.getX(), (int) (box1.getX()+ box1.getHeight() + (tunnel.height / 2)));
+			directionMsg=direction0;
+		}
+		case 1: {
+			robot.mouseMove(this.getX()+ (int) (box1.getX() + (box1.getWidth() / 2)), (int) box1.getY());
+			directionMsg=direction1;
+		}
+		case 2: {
+			robot.mouseMove((this.getX() +(int) (box1.getX() + box1.getWidth())),(int) (box1.getX() + box1.getHeight() + (tunnel.height / 2)));
+			directionMsg=direction2;
+		}
+		case 3: {
+			robot.mouseMove(this.getX(), (int) (box1.getY()+ tunnel.getY() + box2.getY()));
+			directionMsg=direction3;
+		}
 		}
 	}
 
