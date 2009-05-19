@@ -30,14 +30,32 @@ public class P26 implements MouseMotionListener {
 		experimentGUI.setMouseY(e.getY());
 
 		int xPos = (int) experimentGUI.getJFrame().getX() + e.getX();
-		while (true){
+		
 			switch(experimentGUI.getTunnelDirection()){
-				case 0: {
-					if(xPos>=experimentGUI.getBox1().getWidth()){
-						tunnelReady=true;
-						break;	
-					}
+			case 0: {
+				if(xPos>=experimentGUI.getBox1().getWidth()){
+					tunnelReady=true;
+					break;	
 				}
+			}
+			case 1: {
+				if(xPos>=experimentGUI.getBox1().getWidth()){
+					tunnelReady=true;
+					break;	
+				}
+			}
+			case 2: {
+				if(xPos>=experimentGUI.getBox1().getWidth()){
+					tunnelReady=true;
+					break;	
+				}
+			}
+			case 3: {
+				if(xPos>=experimentGUI.getBox1().getWidth()){
+					tunnelReady=true;
+					break;	
+				}
+			}
 			}
 			if (experimentGUI.getMouseY() > (int) experimentGUI.getBox2().getY()) // Falls unter Tunnel
 			{
@@ -53,7 +71,7 @@ public class P26 implements MouseMotionListener {
 		}
 			
 		
-	}
+	
 
 	/**
 	  *
@@ -76,13 +94,13 @@ public class P26 implements MouseMotionListener {
 		try {
 			P26 myProg= new P26();
 			
-			for(int i =0;i<= 63;i++){
-				currentTunnel=experiment.getNext();
-				while (true) {
-					//wait
-					if (tunnelReady){ break;}
-				}
-			}
+//			for(int i =0;i<= 63;i++){
+//				currentTunnel=experiment.getNext();
+//				while (true) {
+//					//wait
+//					if (tunnelReady){ break;}
+//				}
+//			}
 			myProg.experimentGUI.setSize(800,600);
 			myProg.experimentGUI.setMousePosition(0);
 			myProg.experimentGUI.setTitle("Buffered Animated Canvas");
