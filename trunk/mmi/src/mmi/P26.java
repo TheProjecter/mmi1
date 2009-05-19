@@ -13,7 +13,7 @@ public class P26 implements MouseMotionListener,Observer{
 	private static AnimatedCanvas experimentGUI;
 	private static Logger experimentLogger;
 	private int hitCounter;
-	private double MOUSESPEED;
+	private double MOUSESPEED=0.0;
 	private static Tunnel currentTunnel;
 	private static Boolean tunnelReady=false;
 	private static String user;
