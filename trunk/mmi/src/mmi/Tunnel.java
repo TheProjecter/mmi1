@@ -1,4 +1,4 @@
-package mmi;
+//package mmi;
 /**
  * Klasse zur Modellierung eines Tunnels
  */
