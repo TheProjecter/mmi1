@@ -33,7 +33,7 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 	public int hitCounter = 0; 																													// Zähler für Treffer
 	public long timeAtStart = 0;																												// Startzeitpunkt für den Tunneldurchlauf (mouseRelease)
 	public long timeAtEnd = 0;																													// Endzeitpunkt (Goal erreicht)
-	public float mouseSpeed = 1.0f;																											// Mausgeschwindigkeit
+	public float mouseSpeed = 1.0f;																											// Mausgeschwindigkeit, Standardgeschwindigkeit = 1.0f
 	// Zeichnen
 	private Image buffer; 																															// screen buffer, flackerfreie darstellung
 	// Darstellung
