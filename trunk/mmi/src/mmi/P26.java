@@ -19,7 +19,7 @@ public class P26 /* implements Observer */{
 	private static AnimatedCanvas experimentGUI;
 	private static Logger experimentLogger;
 	private int hitCounter;
-	private static double MOUSESPEED = 0.0;
+	private static float MOUSESPEED;
 	private static Tunnel currentTunnel;
 	private static Boolean tunnelReady = false;
 	private static String user;
@@ -31,7 +31,8 @@ public class P26 /* implements Observer */{
 
 		this.experimentGUI = new AnimatedCanvas(CANVAS_WIDTH, CANVAS_HEIGHT,
 				this);
-		this.experimentGUI.setTitle(TITLE);
+		this.experimentGUI.mouseSpeed = MOUSESPEED;
+		this.experimentGUI.setTitle(TITLE + " | Testperson: "+ user + " (" + gender + ") | MouseSpeed: " + MOUSESPEED );
 	}
 
 	/**
@@ -40,7 +41,13 @@ public class P26 /* implements Observer */{
 	public static void main(String args[]) {
 		user = args[0];
 		gender = args[1];
-		MOUSESPEED = (double)Integer.valueOf(args[2]);
+		switch( (int)Integer.valueOf(args[2]) )
+		{
+			case 0: MOUSESPEED = 0.5f; break;
+			case 2: MOUSESPEED = 1.5f; break;
+			case 1: 
+			default: MOUSESPEED = 1.0f;
+		}
 		// try {
 		// AnimatedCanvas f = new AnimatedCanvas();
 		// f.setSize(800, 600);
