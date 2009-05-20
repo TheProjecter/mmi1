@@ -33,6 +33,7 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 	public int hitCounter = 0; 																													// Zähler für Treffer
 	public long timeAtStart = 0;																												// Startzeitpunkt für den Tunneldurchlauf (mouseRelease)
 	public long timeAtEnd = 0;																													// Endzeitpunkt (Goal erreicht)
+	public float mouseSpeed = 1.0f;																											// Mausgeschwindigkeit
 	// Zeichnen
 	private Image buffer; 																															// screen buffer, flackerfreie darstellung
 	// Darstellung
@@ -105,22 +106,31 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 	 * Tunnels ist und wenn ja setzt ihn wieder an den Tunnelrand
 	 */
 	public void mouseMoved(MouseEvent e)
-	{
-		mouseX = e.getX();
-		mouseY = e.getY();
-		
-		if( !mouseEnabled )
-		{
-			robot.mouseMove( startMouseX, startMouseY );
-			return;
+	{			
+		if( !mouseEnabled )																												// Wenn Maus nicht ziehen darf
+		{			
+			mouseX = e.getX();
+			mouseY = e.getY();											
+			robot.mouseMove( startMouseX, startMouseY );														// Wieder auf Startposition setzen
+			return;																																	// Methode beenden
 		}
 		
-		if( box1.contains(mouseX, mouseY) )
+		// Mausgeschwindigkeit ändern
+		int deltaMouseX = e.getX() - mouseX;
+		int deltaMouseY = e.getY() - mouseY;
+		
+		mouseX += (int) (deltaMouseX * mouseSpeed);
+		mouseY += (int) (deltaMouseY * mouseSpeed);
+		
+		robot.mouseMove( this.getX()+mouseX, this.getY()+mouseY );
+		
+		// Kollisionstest
+		if( box1.contains(mouseX, mouseY) )																					
 		{
-			hitCounter++;
-			hitColorBox1 = hitColor;
+			hitCounter++;																															// Treffer zählen
+			hitColorBox1 = hitColor;																									// Treffer anzeigen
 			
-			if( horizontal ) {
+			if( horizontal ) {																												// Maus in Tunnel zurücksetzen
 				robot.mouseMove( mouseX, (int) (box1.getHeight()+this.getY()) );
 			} else {
 				robot.mouseMove( (int) (box1.getWidth()+this.getX()), mouseY );
@@ -128,22 +138,27 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 		}
 		else if( box2.contains(mouseX, mouseY) )
 		{
-			hitCounter++;
-			hitColorBox2 = hitColor;
+			hitCounter++;																															// Treffer zählen
+			hitColorBox2 = hitColor;																									// Treffer anzeigen
 			
-			if( horizontal ) {
+			if( horizontal ) {																												// Maus in Tunnel zurücksetzen
 				robot.mouseMove( mouseX, (int) (box2.getY()+this.getY()) );
 			}	else {
 				robot.mouseMove( (int) (box2.getX()+this.getX()), mouseY ); }
 		}
-		else if( goal.contains(mouseX,mouseY) )
+		else if( goal.contains(mouseX,mouseY) )																			// Ziel erreicht?
 		{
-			timeAtEnd = System.currentTimeMillis();
-			p26.tunnelFinished();
+			timeAtEnd = System.currentTimeMillis();																		// Zeitstempel
+			p26.tunnelFinished();																											// P26 Informieren das Versuch beendet
 		}
 	}
 
 	public void mouseDragged(MouseEvent e) 	{}
+	
+	/**
+	 * Mouse Clicked Listener
+	 *	Erlaubt Mausbewegung nach mouse Release, Zeitstempel setzen
+	 */
 	public void mouseClicked(MouseEvent e) 	{ mouseEnabled = true; timeAtStart = System.currentTimeMillis(); }
 	public void mouseEntered(MouseEvent e) 	{}
 	public void mouseExited(MouseEvent e) 	{}
@@ -152,7 +167,8 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 	
 	
 	/**
-	 * paint Zeichenroutine
+	 * paint - Zeichenroutine
+	 *	Zeichnet alle nötigen Flächen und Text
 	 */
 	public void paint(Graphics g) {
 		// Buffer löschen
@@ -160,7 +176,7 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 		bufferG.setColor(Color.WHITE);
 		bufferG.fillRect(0, 0, WIDTH, HEIGHT);
 
-		// FlŠchen ausserhalb Tunnel zeichnen
+		// Flächen ausserhalb Tunnel zeichnen
 		bufferG.setColor(boxColor);
 		bufferG.fillRect((int) box1.getX(), (int) box1.getY(), (int) box1.getWidth(), (int) box1.getHeight());
 		bufferG.fillRect((int) box2.getX(), (int) box2.getY(), (int) box2.getWidth(), (int) box2.getHeight());
