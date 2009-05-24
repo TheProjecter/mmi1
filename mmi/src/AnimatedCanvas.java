@@ -20,7 +20,7 @@ import javax.swing.JFrame;
 public class AnimatedCanvas extends JFrame implements MouseMotionListener, MouseListener
 {
 	// Konstanten
-	private static final int MOUSESTARTOFFSET		= 50;
+	private static final int MOUSESTARTOFFSET		= 10;
 	private static final Font HINTFONT					= new Font("Arial", Font.BOLD, 50 );
 	private static final Font DEFAULTFONT				= new Font("Arial", Font.PLAIN, 8 );
 	private static final String[] directionTxt	= { "horizontal, left-right", "vertical, top-bottom", "horizontal, right-left", "vertical, bottom-top" };
