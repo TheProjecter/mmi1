@@ -16,7 +16,7 @@ public class Testcase {
 	private String tunnelId;
 	private Dimension tunnelSize;
 	private double mouseSpeed;
-	private Date time;
+	private float time;
 	private int errorCount;
 	private String userName;
 	private String userGender;
@@ -24,9 +24,7 @@ public class Testcase {
 	public Testcase() {
 	}
 
-	public Testcase(String testId, String tunnelId, Dimension tunnelSize,
-			double mouseSpeed, Date time, int errorCount, String userName,
-			String userGender) {
+	public Testcase(String testId, String tunnelId, Dimension tunnelSize, double mouseSpeed, float time, int errorCount, String userName, String userGender) {
 		super();
 		this.testId = testId;
 		this.tunnelId = tunnelId;
@@ -101,7 +99,7 @@ public class Testcase {
 	/**
 	 * @return the time
 	 */
-	public Date getTime() {
+	public float getTime() {
 		return time;
 	}
 
@@ -109,7 +107,7 @@ public class Testcase {
 	 * @param time
 	 *            the time to set
 	 */
-	public void setTime(Date time) {
+	public void setTime(float time) {
 		this.time = time;
 	}
 

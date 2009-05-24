@@ -1,5 +1,11 @@
 //package mmi;
-
+/**
+ * Erstellt und zeichnet Tunnel und handelt Mauskollision
+ *	gibt nach jedem erfolgreichen Durchlaf Feedback an
+ *
+ * @author Sascha
+ */
+ 
 import java.awt.*;
 //import java.awt.Robot;
 import java.awt.image.BufferedImage;
@@ -71,6 +77,7 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 	public AnimatedCanvas(int canvasWidth, int canvasHeight, P26 p26) throws AWTException {
 		
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setResizable( false );
 		
 		WIDTH 	= canvasWidth;
 		HEIGHT 	= canvasHeight;
@@ -254,8 +261,8 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 		{
 			horizontal = true;
 			
-			int tunnelOffsetX 			= (int) (this.getWidth() 	- currentTunnel.getLength())/2;
-			int tunnelOffsetY 			= (int) (this.getHeight() - currentTunnel.getWidth())/2;
+			int tunnelOffsetX 			= (int) (WIDTH 	- currentTunnel.getLength())/2;
+			int tunnelOffsetY 			= (int) (HEIGHT - currentTunnel.getWidth())/2;
 			int tunnelBorderY 			= (int) (tunnelOffsetY + currentTunnel.getWidth());
 			
 			// Flächen einstellen
@@ -277,14 +284,14 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 				startMouseX = tunnelOffsetX - MOUSESTARTOFFSET;
 				
 				// Zielfläche rechts
-				goal.setSize( this.getWidth() - (tunnelOffsetX + currentTunnel.getWidth()) , this.getHeight() );
+				goal.setSize( this.getWidth() - (tunnelOffsetX + currentTunnel.getWidth()) , HEIGHT );
 				goal.setLocation( tunnelOffsetX + currentTunnel.getLength(), 0 );
 			}
 			else {																		// right-left
 				startMouseX = tunnelOffsetX + currentTunnel.getLength() + MOUSESTARTOFFSET;
 				
 				// Zielfläche links
-				goal.setSize( tunnelOffsetX , this.getHeight() );
+				goal.setSize( tunnelOffsetX , HEIGHT );
 				goal.setLocation( 0, 0 );
 			}
 		}
@@ -292,8 +299,8 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 		{
 			horizontal = false;
 			
-			int tunnelOffsetX 	= (int) (this.getHeight() - currentTunnel.getWidth())/2;
-			int tunnelOffsetY 	= (int) (this.getWidth() 	- currentTunnel.getLength())/2;
+			int tunnelOffsetX 	= (int) (HEIGHT - currentTunnel.getWidth())/2;
+			int tunnelOffsetY 	= (int) (WIDTH 	- currentTunnel.getLength())/2;
 			int tunnelBorderX 	= (int) (tunnelOffsetX + currentTunnel.getWidth());
 			
 			tunnel.setSize( currentTunnel.getWidth(), currentTunnel.getLength() );
@@ -302,7 +309,7 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 			box1.setSize( tunnelOffsetX, currentTunnel.getLength() );
 			box1.setLocation( 0, tunnelOffsetY );
 			
-			box2.setSize( this.getWidth() - tunnelBorderX, currentTunnel.getLength() );
+			box2.setSize( WIDTH - tunnelBorderX, currentTunnel.getLength() );
 			box2.setLocation( tunnelBorderX, tunnelOffsetY );
 			
 			// Maus Startposition berechnen
@@ -313,14 +320,14 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 				startMouseY = tunnelOffsetY - MOUSESTARTOFFSET;
 				
 				// Zielfläche unten
-				goal.setSize( this.getWidth(), this.getHeight() - (tunnelOffsetY + currentTunnel.getLength()) );
+				goal.setSize( WIDTH, this.getHeight() - (tunnelOffsetY + currentTunnel.getLength()) );
 				goal.setLocation( 0, tunnelOffsetY + currentTunnel.getLength() );
 			}
 			else {																		// bottom-top
 				startMouseY = tunnelOffsetY + currentTunnel.getLength() + MOUSESTARTOFFSET;
 				
 				// Zielfläche oben
-				goal.setSize( this.getWidth(), tunnelOffsetY  );
+				goal.setSize( WIDTH, tunnelOffsetY  );
 				goal.setLocation( 0, 0 );
 			}
 		} // END TUNNEL
