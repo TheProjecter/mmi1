@@ -119,7 +119,7 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 		{			
 			mouseX = e.getX();
 			mouseY = e.getY();											
-			robot.mouseMove( startMouseX, startMouseY );														// Wieder auf Startposition setzen
+			robot.mouseMove( this.getX() + startMouseX, this.getY() + startMouseY );// Wieder auf Startposition setzen
 			return;																																	// Methode beenden
 		}
 		
@@ -139,9 +139,9 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 			hitColorBox1 = hitColor;																									// Treffer anzeigen
 			
 			if( horizontal ) {																												// Maus in Tunnel zurücksetzen
-				robot.mouseMove( mouseX, (int) (box1.getHeight()+this.getY()) );
+				robot.mouseMove( this.getX() + mouseX, (int) (box1.getHeight() + this.getY()) );
 			} else {
-				robot.mouseMove( (int) (box1.getWidth()+this.getX()), mouseY );
+				robot.mouseMove( (int) (box1.getWidth() + this.getX()), this.getY() + mouseY );
 			}
 		}
 		else if( box2.contains(mouseX, mouseY) )
@@ -150,9 +150,9 @@ public class AnimatedCanvas extends JFrame implements MouseMotionListener, Mouse
 			hitColorBox2 = hitColor;																									// Treffer anzeigen
 			
 			if( horizontal ) {																												// Maus in Tunnel zurücksetzen
-				robot.mouseMove( mouseX, (int) (box2.getY()+this.getY()) );
+				robot.mouseMove( this.getX() + mouseX, (int) (box2.getY()+this.getY()) );
 			}	else {
-				robot.mouseMove( (int) (box2.getX()+this.getX()), mouseY ); }
+				robot.mouseMove( (int) (box2.getX()+this.getX()), this.getY() + mouseY ); }
 		}
 		else if( goal.contains(mouseX,mouseY) )																			// Ziel erreicht?
 		{
