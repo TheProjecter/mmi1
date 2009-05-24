@@ -2,14 +2,20 @@
 
 import java.awt.AWTException;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.util.Date;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
+
 //import java.util.Observable;
 //import java.util.Observer;
 
-public class P26 /* implements Observer */{
+public class P26 extends JFrame/* implements Observer */{
 
 	private static final int CANVAS_WIDTH = 1174;
 	private static final int CANVAS_HEIGHT = 1174;
@@ -19,11 +25,12 @@ public class P26 /* implements Observer */{
 	private static AnimatedCanvas experimentGUI;
 	private static Logger experimentLogger;
 	private int hitCounter;
-	private static float MOUSESPEED;
+	private static double MOUSESPEED = 0.0;
 	private static Tunnel currentTunnel;
 	private static Boolean tunnelReady = false;
-	private static String user;
-	private static String gender;
+	private static String user="unknown";
+	private static String gender="s";
+	private String RESULTPATH="";
 
 	public P26() throws AWTException {
 		this.experiment = new List64();
@@ -31,31 +38,44 @@ public class P26 /* implements Observer */{
 
 		this.experimentGUI = new AnimatedCanvas(CANVAS_WIDTH, CANVAS_HEIGHT,
 				this);
-		this.experimentGUI.mouseSpeed = MOUSESPEED;
-		this.experimentGUI.setTitle(TITLE + " | Testperson: "+ user + " (" + gender + ") | MouseSpeed: " + MOUSESPEED );
+		this.experimentGUI.setTitle(TITLE);
+	}
+	public P26(String username, String usergender, String mousespeed, String path) throws AWTException {
+		this.user=username;
+		this.gender=usergender;
+		this.experiment = new List64();
+		this.experimentLogger = new Logger();
+		this.RESULTPATH=path;
+
+		this.experimentGUI = new AnimatedCanvas(CANVAS_WIDTH, CANVAS_HEIGHT,
+				this);
+		this.experimentGUI.setTitle(TITLE);
+		switch (Integer.valueOf(mousespeed)){
+			case 0: experimentGUI.mouseSpeed = 0.5f;
+			case 1: experimentGUI.mouseSpeed = 1.0f;
+			case 2: experimentGUI.mouseSpeed = 1.5f;
+		}
+		currentTunnel = experiment.getNext();
+		experimentGUI.setNewTunnel(currentTunnel);// loads the first tunnel
+		
 	}
 
 	/**
 	 * Programm starten
 	 */
 	public static void main(String args[]) {
-		user = args[0];
-		gender = args[1];
-		switch( (int)Integer.valueOf(args[2]) )
-		{
-			case 0: MOUSESPEED = 0.5f; break;
-			case 2: MOUSESPEED = 1.5f; break;
-			case 1: 
-			default: MOUSESPEED = 1.0f;
+		if(args.length==2){
+			user = args[0];
+			gender = args[1];
 		}
-		// try {
-		// AnimatedCanvas f = new AnimatedCanvas();
-		// f.setSize(800, 600);
-		// f.setTitle("Buffered Animated Canvas");
-		// f.setVisible(true);
-		// f.go();
-		// } catch (AWTException e) {
-		// }
+		else if (args.length>2){
+			switch (Integer.valueOf(args[2])){
+				case 0: experimentGUI.mouseSpeed = 0.5f;
+				case 1: experimentGUI.mouseSpeed = 1.0f;
+				case 2: experimentGUI.mouseSpeed = 1.5f;
+			}
+		}
+		
 		try {
 			P26 myProg = new P26();
 			// experimentLogger.addTestcase(args[0], new Tescase());
@@ -101,7 +121,7 @@ public class P26 /* implements Observer */{
 					+ currentTunnel.getLength()
 					+ "/"
 					+ currentTunnel.getDirection(), new Dimension(currentTunnel
-					.getWidth(), currentTunnel.getLength()), MOUSESPEED,
+					.getWidth(), currentTunnel.getLength()), experimentGUI.mouseSpeed,
 					new Date(timeTakenForThisTunnel),
 					experimentGUI.hitCounter, user, gender));// logging the
 																// results
@@ -110,7 +130,7 @@ public class P26 /* implements Observer */{
 			experimentGUI.setNewTunnel(currentTunnel); // Startet neues
 														// Tunnelszenario
 		} else {
-			experimentLogger.flush("c:\\");
+			experimentLogger.flush(RESULTPATH);
 			experimentGUI.finish();
 		}
 	}
@@ -128,7 +148,7 @@ public class P26 /* implements Observer */{
 	 * Date(System
 	 * .currentTimeMillis()),experimentGUI.hitCounter,user,gender));// logging
 	 * the results
-	 *
+	 * 
 	 * }else{ experimentLogger.flush("c:\\"); } }
 	 */
 }

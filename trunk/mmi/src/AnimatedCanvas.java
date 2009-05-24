@@ -10,6 +10,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 
+
 public class AnimatedCanvas extends JFrame implements MouseMotionListener, MouseListener
 {
 	// Konstanten
