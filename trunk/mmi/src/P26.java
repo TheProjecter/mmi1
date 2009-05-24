@@ -12,143 +12,74 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-//import java.util.Observable;
-//import java.util.Observer;
-
-public class P26 extends JFrame/* implements Observer */{
-
-	private static final int CANVAS_WIDTH = 1174;
-	private static final int CANVAS_HEIGHT = 1174;
-	private static final String TITLE = "User Study MMI 09 - Gruppe 26";
+/**
+ * Hauptklasse, erstellt GUI und logged Ergebnisse
+ */
+public class P26 extends JFrame
+{
+	private static final int CANVAS_WIDTH 	= 1174;
+	private static final int CANVAS_HEIGHT 	= 1174;
+	private static final String TITLE 			= "User Study MMI 09 - Gruppe 26";
 
 	private static List64 experiment;
 	private static AnimatedCanvas experimentGUI;
 	private static Logger experimentLogger;
-	private int hitCounter;
-	private static double MOUSESPEED = 0.0;
 	private static Tunnel currentTunnel;
-	private static Boolean tunnelReady = false;
-	private static String user="unknown";
-	private static String gender="s";
-	private String RESULTPATH="";
+	
+	// Benutzerdaten
+	private static String	user		= "unknown";
+	private static String gender	= "n/a";
+	private static float speed		= 1.0f;			
+	private String RESULTPATH			= "";
 
-	public P26() throws AWTException {
-		this.experiment = new List64();
-		this.experimentLogger = new Logger();
-
-		this.experimentGUI = new AnimatedCanvas(CANVAS_WIDTH, CANVAS_HEIGHT,
-				this);
-		this.experimentGUI.setTitle(TITLE);
-	}
-	public P26(String username, String usergender, String mousespeed, String path) throws AWTException {
-		this.user=username;
-		this.gender=usergender;
-		this.experiment = new List64();
-		this.experimentLogger = new Logger();
-		this.RESULTPATH=path;
-
-		this.experimentGUI = new AnimatedCanvas(CANVAS_WIDTH, CANVAS_HEIGHT,
-				this);
-		this.experimentGUI.setTitle(TITLE);
-		switch (Integer.valueOf(mousespeed)){
-			case 0: experimentGUI.mouseSpeed = 0.5f;
-			case 1: experimentGUI.mouseSpeed = 1.0f;
-			case 2: experimentGUI.mouseSpeed = 1.5f;
+	public P26(String username, String usergender, String mousespeed, String path) throws AWTException
+	{
+		this.user				= username;
+		this.gender			= usergender;
+		this.RESULTPATH	= path;
+		
+		switch ( Integer.valueOf(mousespeed) )
+		{
+			case 0: this.speed 	= 0.5f; break;
+			case 1: this.speed 	= 1.0f; break;
+			case 2: this.speed 	= 1.5f; break;
+			default: this.speed = 1.0f; break;
 		}
+			
+		this.experiment 			= new List64();
+		this.experimentLogger = new Logger();
+
+		// GUI initialisieren
+		this.experimentGUI = new AnimatedCanvas(CANVAS_WIDTH, CANVAS_HEIGHT, this);
+		this.experimentGUI.mouseSpeed = speed;
+		this.experimentGUI.setTitle(TITLE + " : Testperson: " + user + ", Geschlecht: " + gender + ", Mausgeschwindigkeit: " + speed );
+
+		// Tunnel laden
 		currentTunnel = experiment.getNext();
-		experimentGUI.setNewTunnel(currentTunnel);// loads the first tunnel
-		
+		// Test starten
+		experimentGUI.setNewTunnel(currentTunnel);
 	}
 
-	/**
-	 * Programm starten
-	 */
-	public static void main(String args[]) {
-		if(args.length==2){
-			user = args[0];
-			gender = args[1];
-		}
-		else if (args.length>2){
-			switch (Integer.valueOf(args[2])){
-				case 0: experimentGUI.mouseSpeed = 0.5f;
-				case 1: experimentGUI.mouseSpeed = 1.0f;
-				case 2: experimentGUI.mouseSpeed = 1.5f;
-			}
-		}
+	public void tunnelFinished()
+	{	
+		if (!experiment.getList().isEmpty())
+		{
+			// Zeit von MouseRelease bis Goal (grauses Feld nach Tunnel) erreicht
+			long timeTakenForThisTunnel = experimentGUI.timeAtEnd - experimentGUI.timeAtStart;
 		
-		try {
-			P26 myProg = new P26();
-			// experimentLogger.addTestcase(args[0], new Tescase());
-			// for(int i =0;i<= 63;i++){
-			// currentTunnel=experiment.getNext();
-			// while (true) {
-			// //wait
-			// if (tunnelReady){ break;}
-			// }
-			// }
+			// Ergebnisse Loggen
+			Testcase currentTest = new Testcase(user, currentTunnel.getWidth() + "/" + currentTunnel.getLength() + "/" + currentTunnel.getDirection(), new Dimension(currentTunnel.getWidth(), currentTunnel.getLength()), experimentGUI.mouseSpeed, timeTakenForThisTunnel, experimentGUI.hitCounter, user, gender);
+			experimentLogger.addTestcase(user, currentTest );
+	
+			// Nächsten Tunnel laden
 			currentTunnel = experiment.getNext();
-			experimentGUI.setNewTunnel(currentTunnel);// loads the first tunnel
-			// myProg.experimentGUI.setSize(800,600);
-			// myProg.experimentGUI.setMousePosition(0);
-			// myProg.experimentGUI.setTitle("Buffered Animated Canvas");
-			// myProg.experimentGUI.setVisible(true);
-			// myProg.experimentGUI.go();
-
-			// myProg.experimentGUI.setVisible(false);
-			// myProg.experimentGUI.go();
-			// myProg.experimentGUI.setSize(900,900);
-			// myProg.experimentGUI.setTitle("Buffered Animated Canvas1");
-			// myProg.experimentGUI.setVisible(true);
-			// myProg.experimentGUI.go();
-		} catch (AWTException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void tunnelFinished() {
-		if (!experiment.getList().isEmpty()) {
-			// Erst speichern
-
-			// Zeit von MouseRelease bis Goal (grauses Feld nach Tunnel)
-			// erreicht
-			long timeTakenForThisTunnel = experimentGUI.timeAtEnd
-					- experimentGUI.timeAtStart;
-
-			experimentLogger.addTestcase(user, new Testcase(user, currentTunnel
-					.getWidth()
-					+ "/"
-					+ currentTunnel.getLength()
-					+ "/"
-					+ currentTunnel.getDirection(), new Dimension(currentTunnel
-					.getWidth(), currentTunnel.getLength()), experimentGUI.mouseSpeed,
-					new Date(timeTakenForThisTunnel),
-					experimentGUI.hitCounter, user, gender));// logging the
-																// results
-			// dann starten, sonst sind variablen wieder zurückgesetzt
-			currentTunnel = experiment.getNext(); // loads every next tunnel
-			experimentGUI.setNewTunnel(currentTunnel); // Startet neues
-														// Tunnelszenario
+			// Tunnel erstellen und starten
+			experimentGUI.setNewTunnel(currentTunnel);
 		} else {
+			// Logdatei speichern
 			experimentLogger.flush(RESULTPATH);
+			// Experiment beenden
 			experimentGUI.finish();
 		}
 	}
-
-	/*
-	 * @Override public void update(Observable arg0, Object arg1) { // TODO
-	 * Auto-generated method stub if (!experiment.getList().isEmpty()){
-	 * currentTunnel=experiment.getNext();//loads every next tunnel
-	 * experimentGUI.setNewTunnel(currentTunnel);
-	 * experimentLogger.addTestcase(user, new
-	 * Testcase(user,currentTunnel.getWidth
-	 * ()+"/"+currentTunnel.getLength()+"/"+currentTunnel.getDirection(),new
-	 * Dimension
-	 * (currentTunnel.getWidth(),currentTunnel.getLength()),MOUSESPEED,new
-	 * Date(System
-	 * .currentTimeMillis()),experimentGUI.hitCounter,user,gender));// logging
-	 * the results
-	 * 
-	 * }else{ experimentLogger.flush("c:\\"); } }
-	 */
 }
