@@ -4,14 +4,11 @@ import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -20,7 +17,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -34,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+@SuppressWarnings("serial")
 public class WaysOfInput extends JFrame implements MouseListener, MouseMotionListener, ActionListener, KeyListener {
 
 	protected final static int BUTTONSIZE = 100;
@@ -105,7 +103,7 @@ public class WaysOfInput extends JFrame implements MouseListener, MouseMotionLis
 								e.printStackTrace();
 							}
             	        }
-                System.exit(0);
+            	        System.exit(0);
             }
             public void windowLostFocus(WindowEvent e) {
             	super.windowLostFocus(e);
@@ -115,21 +113,17 @@ public class WaysOfInput extends JFrame implements MouseListener, MouseMotionLis
             	super.windowDeactivated(e);
             	radNormal.doClick();
             }
+            
             public void windowStateChanged(WindowEvent e) {
             	super.windowStateChanged(e);
-            	if(e.getNewState()==Frame.MAXIMIZED_BOTH){
-            		maximized = System.currentTimeMillis();
-            	}
             };
             
         });
 		
-		woi.addComponentListener(new ComponentAdapter(){
-		@Override
-		public void componentResized(ComponentEvent e) {
-			super.componentResized(e);
-			maximized = System.currentTimeMillis();
-		}	
+		woi.addWindowStateListener(new WindowStateListener(){
+			public void windowStateChanged(WindowEvent e) {
+				maximized = System.currentTimeMillis();
+			}
 		});
 		
 		woi.setVisible(true);
