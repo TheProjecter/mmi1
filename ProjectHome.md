@@ -1,0 +1,2 @@
+In this project we design a measurement system for mouse movement. It is part from the exercise "User Study Design" based on the Law of Steering.
+Hypothesis: The vertical mouse movement is more difficult for us as the horizontal. With a experiment we want to check this hypothesis. The experiment: Test person have to move the mouse in various wide and long 2D tunnel.
